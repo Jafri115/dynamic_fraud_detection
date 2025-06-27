@@ -96,20 +96,20 @@ git clone https://github.com/your-username/fraud-detection.git
 cd fraud-detection
 ```
 
-### 2.Install Dependencies
+### 2. Install Dependencies
 Install the required Python packages using requirements.txt:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3.Start MLflow Server
+### 3. Start MLflow Server
 MLflow is used for experiment tracking. Start the server with the following command:
 ```bash
 mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 5005
 
 ```
 
-### 4.Running the Model Training Script
+### 4. Running the Model Training Script
 The main training script is train_model.py. You can specify various parameters to control the model training:
 ```bash
 python train_model.py <dataset_id> <load_from_disk> <train_representation_phase1> <train_OCAN_phase2>
@@ -125,4 +125,4 @@ Command Explanation
 ```
 
 ### Contributing
-For questions or contributions, please contact Wasif Jafri
+For questions or contributions, please contact Wasif Jafri on GitHub at https://github.com/wasifjafri.
