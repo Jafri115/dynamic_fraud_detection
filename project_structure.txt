@@ -1,0 +1,39 @@
+dynamic_fraud_detection/
++-- dynamic_fraud_detection
+|   +-- append_name.py
+|   +-- generate-project-structure.ps1
+|   +-- project_structure.txt
+|   +-- README.md
+|   +-- requirements.txt
+|   +-- train_model.py
+|   +-- data
+|   |   +-- Datasets
+|   |   |   +-- publicDataset
+|   |   |   |   +-- create_wiki_dataset.py
+|   |   |   |   +-- load_datasets.py
+|   |   |   |   +-- wiki
+|   |   |   |   |   +-- category_dict.pkl
+|   |   |   |   |   +-- vews_dataset_v1.1
+|   |   |   |   |   |   +-- user_edits_test.pkl
+|   |   |   |   |   |   +-- user_edits_train.pkl
+|   +-- models
+|   |   +-- AUTO_ENCODER
+|   |   |   +-- learn_latent_representation.py
+|   |   |   +-- T_LSTM.py
+|   |   +-- Combined_rep_MODEL
+|   |   |   +-- combined_rep_integ_model.py
+|   |   |   +-- train_evaluate_combined_model.py
+|   |   +-- HITANET
+|   |   |   +-- transformer.py
+|   |   |   +-- units.py
+|   |   +-- NN_REPRESENTATION
+|   |   |   +-- TABULAR_MODEL_NN.py
+|   |   +-- OCAN_Baseline
+|   |   |   +-- bg_utils.py
+|   |   |   +-- hyperparam_tuning_OCAN.py
+|   |   |   +-- oc_gan_1.py
+|   |   |   +-- regularGan.py
+|   +-- utils
+|   |   +-- feature_selection.py
+|   |   +-- main_utils.py
+|   |   +-- utils.py
