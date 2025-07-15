@@ -12,8 +12,6 @@ In this project, we propose SeqTab-OCAN, a fraud detection framework that integr
 Experimental results on public datasets show that SeqTab-OCAN outperforms existing fraud detection models, offering significant improvements in detecting fraudulent activities.
 
 
-
-
 ## Project Structure
 
 The main project files and folders include:
