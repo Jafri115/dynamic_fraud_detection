@@ -62,7 +62,22 @@ This dataset is particularly useful for analyzing user interactions in online pl
 | **Weekend Edits**           | Number of edits made by a user during weekends.                              |
 | **Page Category Diversity**| Number of unique categories of pages edited by a user.                       |
 
+
 These engineered features help capture behavioral patterns that are useful for detecting fraudulent or abnormal activities, drawing from both sequential and tabular aspects of the dataset.
+
+### Creating Sequence Data
+
+To build the sequential dataset used by the models and demo, run the helper script:
+
+```bash
+python data/Datasets/publicDataset/create_wiki_dataset.py
+```
+
+This script processes the raw VEWS files by mapping page categories to numeric
+IDs, grouping edits by user and label, and saving the resulting sequences to
+`user_edits_train.pkl` and `user_edits_test.pkl` under
+`data/Datasets/publicDataset/wiki/vews_dataset_v1.1/`.
+
 
 ## Public Dataset - Results Comparison
 
@@ -123,6 +138,14 @@ Command Explanation
 - train_OCAN_phase2: Set to 1 to train the OCAN GAN model (Phase 2).
 
 ```
+
+### 5. Running the Gradio Demo
+To quickly test a trained model, install Gradio and launch the demo interface:
+```bash
+pip install gradio
+python gradio_demo.py /path/to/saved_model.h5
+```
+The demo expects the Wikipedia feature values described above and outputs whether the user is predicted to be a vandal.
 
 ### Contributing
 For questions or contributions, please contact Wasif Jafri on GitHub at https://github.com/wasifjafri.
