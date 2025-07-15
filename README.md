@@ -145,7 +145,10 @@ To quickly test a trained model, install Gradio and launch the demo interface:
 pip install gradio
 python gradio_demo.py /path/to/saved_model.h5
 ```
-The demo expects the Wikipedia feature values described above and outputs whether the user is predicted to be a vandal.
+The demo expects the Wikipedia tabular features along with an edit sequence. The
+sequence should be provided as space- or comma-separated page category IDs,
+e.g. `"12 32 18 7"`. The app outputs whether the user is predicted to be a
+vandal and the associated probability.
 
 ### Contributing
 For questions or contributions, please contact Wasif Jafri on GitHub at https://github.com/wasifjafri.
