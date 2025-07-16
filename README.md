@@ -14,19 +14,24 @@ Experimental results on public datasets show that SeqTab-OCAN outperforms existi
 
 ## Project Structure
 
-The main project files and folders include:
+The repository follows a modular layout:
 
 ```plaintext
 .
-├── data/                        # Contains datasets and processed data
-├── models/                      # Model definitions and training scripts
-│   ├── Combined_rep_MODEL/      # Combined representation learning model
-│   └── OCAN_Baseline/           # OCAN GAN model for fraud detection
-├── saved_models/                # Directory for model checkpoints
-├── utils/                       # Utility functions for data handling, logging, etc.
-├── train_model.py               # Main script to train the model phases
-├── requirements.txt             # Dependencies for setup
-└── README.md                    # Project documentation and instructions
+├── data/
+│   ├── raw/
+│   ├── processed/
+│   └── scripts/
+├── notebooks/
+├── src/
+│   ├── data/
+│   ├── models/
+│   ├── training/
+│   └── cli.py
+├── scripts/
+├── configs/
+├── tests/
+└── README.md
 ```
 ## Dataset Overview
 
@@ -109,19 +114,11 @@ mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 50
 
 ```
 
-### 4. Running the Model Training Script
-The main training script is train_model.py. You can specify various parameters to control the model training:
+### 4. Running Training Scripts
+Use the CLI defined in `src/cli.py` or run one of the helper scripts in `scripts/`.
+For example:
 ```bash
-python train_model.py <dataset_id> <load_from_disk> <train_representation_phase1> <train_OCAN_phase2>
-```
-Command Explanation
-
-```plaintext
-- dataset_id: Identifier for the dataset (e.g., 1 for the default dataset).
-- load_from_disk: Set to 1 to load pre-processed data from disk.
-- train_representation_phase1: Set to 1 to train the representation learning model (Phase 1).
-- train_OCAN_phase2: Set to 1 to train the OCAN GAN model (Phase 2).
-
+python -m src.cli phase1
 ```
 
 ### Contributing
