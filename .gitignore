@@ -44,7 +44,7 @@ plots/*
 
 # Notebooks
 .ipynb_checkpoints
-notebooks/*.ipynb
+# notebooks/*.ipynb
 !notebooks/.gitkeep
 
 # Demo
