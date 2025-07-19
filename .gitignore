@@ -1,0 +1,53 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Data files
+data/raw/*.csv
+data/processed/*
+data/cache/*
+!data/**/.gitkeep
+
+# Model artifacts
+artifacts/*
+!artifacts/.gitkeep
+mlruns/
+tuning_results/
+
+# Logs
+logs/*
+!logs/.gitkeep
+*.log
+*.db
+
+# Environment
+.env
+.venv
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated
+plots/*
+!plots/.gitkeep
+*.json
+!*config*.json
+
+# Notebooks
+.ipynb_checkpoints
+notebooks/*.ipynb
+!notebooks/.gitkeep
+
+# Demo
+demo_app/
+*.html
+*.bat

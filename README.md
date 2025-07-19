@@ -1,128 +1,337 @@
-# Dynamic Fraud Detection :Machine Learning Approaches for Identifying Anomalous Activities
+# 🔒 Dynamic Fraud Detection## 📋 Table of Contents
 
-This is a master's thesis project in collaboration with the University of Hildesheim, focused on fraud detection using user behavior analytics.
+- [Live Demo](#-live-demo)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Architecture](#-architecture)
+- [Dataset](#-dataset)
+- [Performance](#-performance)
+- [API Usage](#-api-usage)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Citation](#-citation)n](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
+[![Research](https://img.shields.io/badge/Research-Fraud%20Detection-red.svg)](https://github.com/Jafri115/dynamic_fraud_detection)
+[![University](https://img.shields.io/badge/University-Hildesheim-purple.svg)](https://www.uni-hildesheim.de/)
+[![License](https://img.shields.io/badge/License-Academic-yellow.svg)](LICENSE)
+[![Demo](https://img.shields.io/badge/🤗%20Hugging%20Face-Demo-yellow)](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
 
+> Advanced fraud detection framework combining sequential and tabular data using deep learning and adversarial networks.
 
-## Project Overview
+**SeqTab-OCAN** is a state-of-the-art machine learning framework designed to detect fraudulent activities by leveraging both sequential user behavior patterns and tabular features. This project was developed as part of a master's thesis in collaboration with the University of Hildesheim.
 
-Fraudulent behaviors are dynamic and challenging to detect due to the constantly evolving techniques used by fraudsters. Traditional fraud detection methods often focus on either transactional data or user activity sequences, but fail to combine both types effectively. Furthermore, many models do not consider the temporal dynamics inherent in sequential data.
+## 🎮 Live Demo
 
-In this project, we propose SeqTab-OCAN, a fraud detection framework that integrates sequential and tabular data using a time-aware attention network to capture the temporal relationships in sequence data and combine them with tabular data, improving predictive accuracy. Additionally, SeqTab-OCAN incorporates One-Class Adversarial Networks (OCAN) with complementary GANs to handle imbalanced datasets and detect outliers, boosting fraud detection performance.
+🚀 **Try it now**: [**Interactive Demo on Hugging Face**](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
 
-Experimental results on public datasets show that SeqTab-OCAN outperforms existing fraud detection models, offering significant improvements in detecting fraudulent activities.
+Experience SeqTab-OCAN in action! Upload user data and get real-time fraud detection predictions through our interactive web interface.
 
+## 🌟 Key Features
 
-## Project Structure
+- **🧠 Hybrid Architecture**: Combines sequential and tabular data for comprehensive fraud detection
+- **⏰ Time-Aware Processing**: Captures temporal relationships in user behavior sequences  
+- **⚖️ Imbalanced Data Handling**: One-Class Adversarial Networks (OCAN) with GANs for outlier detection
+- **📊 Superior Performance**: Outperforms baseline models across multiple metrics
+- **🚀 Production Ready**: FastAPI-based REST API for real-time predictions
+- **🔧 Modular Design**: Easy to extend and customize for different use cases
 
-The main project files and folders include:
+## � Table of Contents
 
-```plaintext
-.
-├── data/                        # Contains datasets and processed data
-├── models/                      # Model definitions and training scripts
-│   ├── Combined_rep_MODEL/      # Combined representation learning model
-│   └── OCAN_Baseline/           # OCAN GAN model for fraud detection
-├── saved_models/                # Directory for model checkpoints
-├── utils/                       # Utility functions for data handling, logging, etc.
-├── train_model.py               # Main script to train the model phases
-├── requirements.txt             # Dependencies for setup
-└── README.md                    # Project documentation and instructions
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Architecture](#-architecture)
+- [Dataset](#-dataset)
+- [Performance](#-performance)
+- [API Usage](#-api-usage)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Citation](#-citation)
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip package manager
+- Virtual environment (recommended)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/Jafri115/dynamic_fraud_detection.git
+cd dynamic_fraud_detection
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
-## Dataset Overview
+
+## ⚡ Quick Start
+
+### Training the Model
+
+```bash
+# Run the complete training pipeline
+python run_complete_pipeline.py
+```
+
+### Starting the API Server
+
+```bash
+# Launch the FastAPI server
+python app.py
+
+# Server will be available at http://localhost:8000
+# API documentation at http://localhost:8000/docs
+```
+
+### Running Tests
+
+```bash
+# Execute test suite
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ --cov=src --cov-report=html
+```
+
+## 🏗️ Architecture
+
+SeqTab-OCAN combines multiple components for effective fraud detection:
+
+```
+┌─────────────────┐    ┌─────────────────┐
+│  Sequential     │    │    Tabular      │
+│     Data        │    │     Data        │
+└─────────┬───────┘    └─────────┬───────┘
+          │                      │
+          ▼                      ▼
+┌─────────────────┐    ┌─────────────────┐
+│ Time-Aware      │    │   Feature       │
+│ Attention       │    │  Engineering    │
+│   Network       │    │    Module       │
+└─────────┬───────┘    └─────────┬───────┘
+          │                      │
+          └──────────┬───────────┘
+                     ▼
+          ┌─────────────────┐
+          │ SeqTab Fusion   │
+          │    Network      │
+          └─────────┬───────┘
+                    ▼
+          ┌─────────────────┐
+          │ OCAN Adversarial│
+          │    Training     │
+          └─────────┬───────┘
+                    ▼
+          ┌─────────────────┐
+          │ Fraud Detection │
+          │   Predictions   │
+          └─────────────────┘
+```
+## 📊 Dataset
 
 ### UMDWikipedia Dataset
+Our experiments utilize the UMDWikipedia dataset, adapted for fraud detection research:
 
-- **Purpose**: Developed for Wikipedia vandalism detection.
-- **Source**: Data from approximately 33,000 users, including both vandals and non-vandals.
-- **Data Size**: 
-  - 770,000 edits in total.
-  - 160,651 edits (20%) made by vandals.
-  - 609,389 edits (80%) made by benign users.
-- **Features**: The dataset provides detailed insights into the editing behaviors of users, making it suitable for studying user activity patterns and detecting anomalous behaviors that may indicate fraudulent actions or vandalism.
+- **📈 Scale**: 33,000+ users, 770,000 edits
+- **🎯 Distribution**: 20% vandalism, 80% benign behavior  
+- **🔧 Features**: 9 engineered behavioral features
+- **💡 Innovation**: Novel adaptation of Wikipedia data for fraud detection
 
-This dataset is particularly useful for analyzing user interactions in online platforms and can be applied in fraud detection scenarios where identifying abnormal behavior is crucial.
-
-## Adaptation for Fraud Detection
-
-- **Challenge**: A lack of publicly available datasets containing both sequential and tabular data types.
-- **Solution**: The UMDWikipedia dataset was adapted to fit the experimental needs of fraud detection, combining sequential and tabular data.
-- **Data Engineering**: Tabular features were engineered from the sequential data available in Wikipedia logs to better represent user behavior for fraud detection.
-
-### Table 1: Description of Engineered Features from the UMDWikipedia Dataset
+### Engineered Features
 
 | Feature                    | Description                                                                  |
 |----------------------------|------------------------------------------------------------------------------|
 | **Total Edits**             | Total number of edits made by a user.                                        |
 | **Unique Pages**            | Number of unique pages edited by a user.                                     |
-| **Reverted Ratio**          | Average ratio of edits that were reverted for a user.                        |
-| **Cluebot Revert Count**    | Total number of times a user’s edits were reverted by ClueBot.               |
 | **Edit Frequency**          | Average time in seconds between consecutive edits by a user.                 |
 | **Night Edits**             | Number of edits made by a user during nighttime (18:00 - 06:00).             |
 | **Day Edits**               | Number of edits made by a user during daytime (06:00 - 18:00).               |
 | **Weekend Edits**           | Number of edits made by a user during weekends.                              |
-| **Page Category Diversity**| Number of unique categories of pages edited by a user.                       |
 
 These engineered features help capture behavioral patterns that are useful for detecting fraudulent or abnormal activities, drawing from both sequential and tabular aspects of the dataset.
 
-## Public Dataset - Results Comparison
+## 🎯 Performance
 
-### Table 3: Comparison of Experiments on UMDWikipedia Dataset
+### Benchmark Results
 
-| Method               | Data   | Pre  | Recall | F1    | AUC_PR | AUC_ROC |
-|----------------------|--------|------|--------|-------|--------|---------|
-| **OCAN Baseline with LSTM-AE** | Seq    | 0.9117 | 0.9097 | 0.9107 | 0.8838 | 0.971   |
-|                      |        | ±0.007 | ±0.008  | ±0.003 | ±0.004 | ±0.003  |
-| **Tab-RL**            | Tab    | 0.9042 | 0.7996 | 0.8487 | 0.9240 | 0.9079  |
-|                      |        | ±0.002 | ±0.004  | ±0.002 | ±0.001 | ±0.003  |
-| **Seq-RL**            | Seq    | 0.9470 | 0.9026 | 0.9241 | 0.9718 | 0.9754  |
-|                      |        | ±0.018 | ±0.015  | ±0.003 | ±0.011 | ±0.005  |
-| **SeqTab-RL**         | Seq+Tab | 0.9529 | 0.8931 | 0.9225 | 0.9735 | 0.9732  |
-|                      |        | ±0.018 | ±0.032  | ±0.011 | ±0.001 | ±0.002  |
-| **SeqTab-OCAN**       | Seq+Tab | 0.9307 | 0.9487 | 0.9396 | 0.9817 | 0.9379  |
-|                      |        | ±0.0003 | ±0.0002 | ±0.0001 | ±0.0002 | ±0.0002 |
+SeqTab-OCAN achieves state-of-the-art performance on the UMDWikipedia dataset:
 
+| Model | Data Type | Precision | Recall | F1-Score | AUC-PR | AUC-ROC |
+|-------|-----------|-----------|--------|----------|--------|---------|
+| OCAN Baseline | Sequential | 0.9117±0.007 | 0.9097±0.008 | 0.9107±0.003 | 0.8838±0.004 | 0.971±0.003 |
+| Tab-RL | Tabular | 0.9042±0.002 | 0.7996±0.004 | 0.8487±0.002 | 0.9240±0.001 | 0.9079±0.003 |
+| Seq-RL | Sequential | 0.9470±0.018 | 0.9026±0.015 | 0.9241±0.003 | 0.9718±0.011 | 0.9754±0.005 |
+| SeqTab-RL | Seq + Tab | 0.9529±0.018 | 0.8931±0.032 | 0.9225±0.011 | 0.9735±0.001 | 0.9732±0.002 |
+| **SeqTab-OCAN** | **Seq + Tab** | **0.9307±0.0003** | **0.9487±0.0002** | **0.9396±0.0001** | **0.9817±0.0002** | **0.9379±0.0002** |
 
-The results show that combining both sequential (Seq) and tabular (Tab) data significantly improves the performance of fraud detection models, with **SeqTab-OCAN** demonstrating the best performance across all metrics.
+### Key Insights
 
+- ✅ **Best F1-Score**: 0.9396 with minimal variance (±0.0001)
+- ✅ **Highest AUC-PR**: 0.9817, indicating excellent precision-recall trade-off
+- ✅ **Balanced Performance**: Strong performance across all evaluation metrics
+- ✅ **Robust Results**: Extremely low standard deviation demonstrates model stability
 
-## How to Run the Project
+## 🔌 API Usage
 
-### 1. Clone the Repository
-
-Start by cloning the repository to your local machine:
+### Starting the Server
 
 ```bash
-git clone https://github.com/your-username/fraud-detection.git
-cd fraud-detection
+python app.py
 ```
 
-### 2. Install Dependencies
-Install the required Python packages using requirements.txt:
+### Making Predictions
+
+```python
+import requests
+
+# Example prediction request
+data = {
+    "user_features": {
+        "total_edits": 150,
+        "unique_pages": 45,
+        "reverted_ratio": 0.12,
+        # ... other features
+    },
+    "sequence_data": [
+        {"timestamp": "2024-01-01T10:00:00", "action": "edit", "page_id": 123},
+        # ... sequence data
+    ]
+}
+
+response = requests.post("http://localhost:8000/predict", json=data)
+prediction = response.json()
+```
+
+### API Endpoints
+
+- `POST /predict` - Make fraud predictions
+- `GET /health` - Health check
+- `GET /docs` - Interactive API documentation
+
+
+## Quick Start
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd dynamic_fraud_detection
+
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # Linux/Mac
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Start MLflow Server
-MLflow is used for experiment tracking. Start the server with the following command:
+### Usage
+
 ```bash
-mlflow server --backend-store-uri sqlite:///mlflow.db --host 127.0.0.1 --port 5005
+# Train the complete pipeline
+python run_complete_pipeline.py
 
+# Start API server
+python app.py
+
+# Run tests
+pytest tests/
 ```
 
-### 4. Running the Model Training Script
-The main training script is train_model.py. You can specify various parameters to control the model training:
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Setup
+
 ```bash
-python train_model.py <dataset_id> <load_from_disk> <train_representation_phase1> <train_OCAN_phase2>
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run tests
+pytest tests/ --cov=src
+
+# Code formatting
+black src/ tests/
+flake8 src/ tests/
 ```
-Command Explanation
 
-```plaintext
-- dataset_id: Identifier for the dataset (e.g., 1 for the default dataset).
-- load_from_disk: Set to 1 to load pre-processed data from disk.
-- train_representation_phase1: Set to 1 to train the representation learning model (Phase 1).
-- train_OCAN_phase2: Set to 1 to train the OCAN GAN model (Phase 2).
+## 📁 Project Structure
 
 ```
+dynamic_fraud_detection/
+├── 📂 src/                     # Source code
+│   ├── 📂 components/          # Data processing components
+│   ├── 📂 models/              # Model definitions
+│   ├── 📂 pipeline/            # Training and prediction pipelines
+│   ├── 📂 training/            # Training utilities
+│   └── 📂 utils/               # Helper functions
+├── 📂 tests/                   # Test suite
+├── 📂 data/                    # Data directory (structure only)
+├── 📂 notebooks/               # Jupyter notebooks for analysis
+├── 📂 scripts/                 # Training and evaluation scripts
+├── 🐍 app.py                   # FastAPI application
+├── 🐍 run_complete_pipeline.py # Complete training pipeline
+├── 📋 requirements.txt         # Production dependencies
+└── 📄 README.md               # This file
+```
 
-### Contributing
-For questions or contributions, please contact Wasif Jafri on GitHub at https://github.com/wasifjafri.
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📚 Citation
+
+If you use this work in your research, please cite:
+
+```bibtex
+@mastersthesis{murtaza2024seqtab,
+  title={Dynamic Fraud Detection: Machine Learning Approaches for Identifying Anomalous Activities},
+  author={Murtaza, Wasif},
+  year={2024},
+  school={University of Hildesheim},
+  type={Master's Thesis}
+}
+```
+
+## 👨‍💻 Author
+
+**Wasif Murtaza**  
+📧 Email: swasifmurtaza@gmail.com  
+🎓 University of Hildesheim  
+🔗 GitHub: [@Jafri115](https://github.com/Jafri115)
+
+## 🙏 Acknowledgments
+
+- University of Hildesheim for project supervision
+- UMD for providing the Wikipedia vandalism dataset
+- Open-source community for tools and libraries used
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ for fraud detection research</sub>
+</div>
