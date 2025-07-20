@@ -3,18 +3,19 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
-[![Research](https://img.shields.io/badge/Research-Fraud%20Detection-red.svg)](https://github.com/Jafri115/dynamic_fraud_detection)
+[![Demo](https://img.shields.io/badge/Demo-Hugging%20Face-yellow)](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
 [![University](https://img.shields.io/badge/University-Hildesheim-purple.svg)](https://www.uni-hildesheim.de/)
-[![License](https://img.shields.io/badge/License-Academic-yellow.svg)](LICENSE)
-[![Demo](https://img.shields.io/badge/🤗%20Hugging%20Face-Demo-yellow)](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **SeqTab-OCAN**: A state-of-the-art machine learning framework for fraud detection combining sequential and tabular data using deep learning and adversarial networks.
+> **SeqTab-OCAN**: A deep learning framework for detecting fraudulent behavior using both sequential and tabular data, trained with adversarial techniques for robustness.
+
+---
 
 ## 🎮 Live Demo
 
-🚀 **[Try the Interactive Demo on Hugging Face →](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)**
+🚀 [**Try it now on Hugging Face**](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
 
-Experience real-time fraud detection with our deployed model. Upload user data and get instant predictions through an intuitive web interface.
+Upload user behavior data and get instant fraud predictions through a clean web interface.
 
 ---
 
@@ -33,47 +34,11 @@ Outperforms all established benchmarks with **92.27% Accuracy** and **92.01% F1-
 
 *This work was developed as part of a master's thesis in collaboration with the University of Hildesheim.*
 
-## 📋 Table of Contents
-
-- [🎮 Live Demo](#-live-demo)
-- [📖 Overview](#-overview)
-- [🚀 Quick Start](#-quick-start)
-- [🏗️ Architecture](#️-architecture)
-- [📊 Dataset & Features](#-dataset--features)
-- [🎯 Performance](#-performance)
-- [💻 Development](#-development)
-- [📚 Research](#-research)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-
 ---
-
-## 🚀 Quick Start
-
-### ⚡ One-Click Setup
-
-```bash
-# Clone and setup
-git clone https://github.com/Jafri115/dynamic_fraud_detection.git
-cd dynamic_fraud_detection
-
-# Create environment and install dependencies
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 🎯 Usage
-
-| Task | Command | Description |
-|------|---------|-------------|
-| **Train Model** | `python run_complete_pipeline.py` | Complete training pipeline |
-| **Start API** | `python app.py` | Launch FastAPI server (localhost:8000) |
-| **API Docs** | Visit `localhost:8000/docs` | Interactive API documentation |
 
 ## 🏗️ Architecture
 
-### System Overview
+### System Flow
 
 ```
 ┌─────────────────┐    ┌─────────────────┐
@@ -106,186 +71,107 @@ pip install -r requirements.txt
           └─────────────────┘
 ```
 
-### 🔄 Processing Pipeline
+### Model Components
 
-1. **Data Ingestion**: Raw Wikipedia edit logs → Structured sequences + features
-2. **Feature Engineering**: Temporal, behavioral, and statistical feature extraction  
-3. **Sequence Processing**: Time-aware attention captures temporal dependencies
-4. **Feature Fusion**: Advanced neural fusion of sequential and tabular representations
-5. **Adversarial Training**: OCAN handles class imbalance and improves robustness
-6. **Prediction**: Real-time fraud probability scoring
+| Component            | Role                          | Technology            |
+|---------------------|-------------------------------|------------------------|
+| Sequential Encoder   | Learn temporal patterns       | LSTM + Attention       |
+| Tabular Encoder      | Capture behavioral signals     | Dense Layers           |
+| Fusion Layer         | Combine modalities             | Custom Neural Layer    |
+| OCAN Module          | Detect anomalies               | GAN + One-Class SVM    |
 
-### 🧠 Model Architecture
+---
 
-| Component | Purpose | Technology |
-|-----------|---------|------------|
-| **Sequential Encoder** | Temporal pattern recognition | LSTM + Attention |
-| **Tabular Encoder** | Statistical feature processing | Dense Networks |
-| **Fusion Layer** | Multi-modal integration | Custom Architecture |
-| **OCAN Module** | Adversarial anomaly detection | GANs + One-Class |
+## 🚀 Quick Start
 
-## 📊 Dataset & Features
-
-### 🗃️ UMD Wikipedia Vandalism Dataset
-
-| Metric | Value | Description |
-|--------|-------|-------------|
-| **Users** | 33,000+ | Mix of vandals and legitimate editors |
-| **Edits** | 770,000+ | Wikipedia edit transactions |
-| **Distribution** | 20% vandal / 80% benign | Realistic imbalanced scenario |
-| **Time Span** | 2013-2014 | Historical Wikipedia edit data |
-| **Features** | 19 Tabular + Sequential | Behavioral and temporal indicators |
-
-### 🔧 Feature Engineering
-
-Our feature engineering transforms raw Wikipedia edit logs into meaningful behavioral indicators:
-
-#### Sequential Features
-- `edit_sequence` - Sequence of page category IDs edited by user
-- `rev_time` - Timestamps of user's edit actions
-- `time_delta_seq` - Time intervals between consecutive edits
-
-#### Behavioral Features  
-- `total_edits` - User's complete edit history count
-- `unique_pages` - Number of distinct pages edited
-- `unique_categories` - Diversity of page categories edited
-- `meta_edit_ratio` - Proportion of edits to meta-pages (Talk:, User:, etc.)
-- `first_edit_meta` - Whether user's first edit was to a meta-page
-
-#### Session-Based Features
-- `sessions_count` - Number of editing sessions (30-min gaps)
-- `avg_session_length` - Average edits per session
-- `max_session_length` - Maximum edits in single session
-- `session_intensity_variance` - Variability in session activity
-
-#### Temporal Features
-- `night_edit_ratio` - Activity during 22:00-06:00 (suspicious pattern)
-- `weekend_edit_ratio` - Weekend activity levels
-- `fast_edit_ratio_3min` - Proportion of edits within 3 minutes
-- `fast_edit_ratio_15min` - Proportion of edits within 15 minutes
-- `time_regularity_score` - Consistency of editing patterns
-
-#### Content Diversity Features
-- `page_diversity_ratio` - Unique pages / total edits
-- `category_diversity_ratio` - Unique categories / total edits
-- `category_switch_score` - Frequency of switching between categories
-- `reedit_score` - Tendency to re-edit same pages
-- `meta_burst_score` - Concentration of meta-page edits
-
-### 💾 Data Processing
-
-```python
-# Example: Feature extraction pipeline
-from src.components.data_transformation import WikiCombinedTransformation
-
-# Initialize transformer
-transformer = WikiCombinedTransformation()
-
-# Process raw edit sequences and compute time deltas
-df = transformer.compute_time_deltas(df)
-
-# Extract tabular features (19 behavioral indicators)
-features, labels = transformer.extract_tabular_features(df)
-
-# Process sequence features for neural network
-transformer.process_sequence_features(df, seq_path, label_path, n_event_code)
-
-# Combined dataset ready for training
-combined_data = (tabular_features, sequence_features)
-```
-
-## 🎯 Performance
-
-### 🏆 Benchmark Results
-
-#### **Our Model Performance**
-| Metric | Value | Significance |
-|--------|-------|--------------|
-| **Accuracy** | **92.27%** | State-of-the-art performance |
-| **F1-Score** | **92.01%** | Excellent precision-recall balance |
-| **Precision** | **96.88%** | High confidence in positive predictions |
-| **Recall** | **87.60%** | Strong vandal detection capability |
-| **ROC AUC** | **97.08%** | Exceptional discrimination ability |
-| **Average Precision** | **97.48%** | Outstanding performance on imbalanced data |
-
-#### **Comparison with VEWS Benchmarks (Kumar et al., 2015)**
-| Benchmark Model | Published Accuracy | Our Model | Improvement | Status |
-|-----------------|-------------------|-----------|-------------|---------|
-| **VEWS_WVB** | 86.60% | **92.27%** | **+5.67%** | ✅ **Exceeds** |
-| **VEWS_WTPM** | 87.39% | **92.27%** | **+4.88%** | ✅ **Exceeds** |
-| **VEWS_Combined** | 87.82% | **92.27%** | **+4.45%** | ✅ **Exceeds** |
-| **VEWS_Temporal** | 91.66% | **92.27%** | **+0.61%** | ✅ **Exceeds** |
-
-### 📈 Key Achievements
-
-| Achievement | Value | Significance |
-|-------------|-------|--------------|
-| **� Ranking** | **#1 Model** | Outperforms all verified benchmarks |
-| **📊 VEWS Benchmarks** | **4/4 Exceeded** | Beats all established baselines |
-| **� Best Improvement** | **+5.67%** | Significant advance over WVB baseline |
-| **⚡ Minimal Improvement** | **+0.61%** | Even exceeds strongest VEWS_Temporal |
-| **� Verification** | **Academically Rigorous** | Only verified, published benchmarks used |
-
-### 🔍 Analysis
-
-- **✅ State-of-the-Art**: Achieves new best performance on Wikipedia vandalism detection
-- **✅ Consistent Excellence**: Exceeds ALL established VEWS benchmarks without exception
-- **✅ Significant Improvements**: 0.61% to 5.67% improvements across all baselines
-- **✅ Academic Rigor**: Comparison based on verified, peer-reviewed benchmark results
-- **✅ Production Ready**: High precision (96.88%) ensures reliable real-world deployment
-
-## 💻 Development
-
-### 🗂️ Project Structure
-
-```
-dynamic_fraud_detection/
-├── 📁 src/                     # Core source code
-│   ├── components/             # Data processing pipeline
-│   ├── models/                 # ML model definitions  
-│   ├── pipeline/               # Training & prediction pipelines
-│   ├── training/               # Training utilities & configs
-│   └── utils/                  # Helper functions & tools
-├── 🧪 tests/                   # Comprehensive test suite
-├── 📁 data/                    # Dataset storage (structure only)
-├── 📁 notebooks/               # Research & analysis notebooks  
-├── 📁 scripts/                 # Training & evaluation scripts
-├── ⚙️ app.py                   # FastAPI production server
-├── 📁 run_complete_pipeline.py # End-to-end training pipeline
-└── 📋 requirements.txt         # Python dependencies
-```
-
-### 🔧 Development Setup
+### 🧪 Setup & Run
 
 ```bash
-# 1. Clone repository
 git clone https://github.com/Jafri115/dynamic_fraud_detection.git
 cd dynamic_fraud_detection
 
-# 2. Setup development environment
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 3. Install development dependencies
+source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-pip install -r requirements-dev.txt  # Optional: development tools
-
-# 4. Setup pre-commit hooks (optional)
-pre-commit install
-
-# 5. Run tests to verify setup
-pytest tests/ -v
 ```
 
-## 📚 Research
+### 🛠️ Core Commands
 
-### 🎓 Academic Context
+| Task           | Command                        | Description                       |
+|----------------|--------------------------------|-----------------------------------|
+| Train Model    | `python run_complete_pipeline.py` | Full model training pipeline      |
+| Start API      | `python app.py`                | Launch FastAPI server (localhost) |
+| API Docs       | Visit `localhost:8000/docs`    | Swagger/OpenAPI UI                |
 
-This work was conducted as part of a **Master's Thesis** at the **University of Hildesheim**, Germany, focusing on advanced machine learning approaches for fraud detection in dynamic environments.
+---
 
-### 📄 Citation
+## 📊 Dataset & Features
 
-If you use this work in your research, please cite:
+### 📁 UMD Wikipedia Vandalism Dataset
+
+| Property        | Value         |
+|-----------------|---------------|
+| Users           | 33,000+       |
+| Edits           | 770,000+      |
+| Class Balance   | 20% Vandal    |
+| Time Span       | 2013–2014     |
+| Modalities      | Sequential + Tabular |
+
+### 🔍 Feature Types
+
+- **Sequential**: `edit_sequence`, `rev_time`, `time_delta_seq`  
+- **Behavioral**: `meta_edit_ratio`, `reedit_score`, `unique_categories`  
+- **Temporal**: `night_edit_ratio`, `fast_edit_ratio`, `weekend_edit_ratio`  
+- **Session-based**: `sessions_count`, `avg_session_length`, `session_variance`
+
+
+---
+
+## 🎯 Performance
+
+### ✅ Model Results
+
+| Metric           | Value     |
+|------------------|-----------|
+| Accuracy         | **92.27%** |
+| F1-Score         | **92.01%** |
+| Precision        | 96.88%    |
+| Recall           | 87.60%    |
+| ROC AUC          | 97.08%    |
+| Avg. Precision   | 97.48%    |
+
+### 📈 Compared to VEWS Benchmarks
+
+| VEWS Model       | Accuracy | Ours      | Improvement |
+|------------------|----------|-----------|-------------|
+| VEWS_WVB         | 86.60%   | 92.27%    | +5.67%      |
+| VEWS_WTPM        | 87.39%   | 92.27%    | +4.88%      |
+| VEWS_Combined    | 87.82%   | 92.27%    | +4.45%      |
+| VEWS_Temporal    | 91.66%   | 92.27%    | +0.61%      |
+
+---
+
+## 📁 Project Structure
+
+```
+dynamic_fraud_detection/
+├── src/                   # Core modules
+│   ├── components/        # Feature engineering
+│   ├── models/            # ML models
+│   ├── pipeline/          # Training/prediction
+│   └── utils/             # Helpers/utilities
+├── app.py                 # FastAPI server
+├── run_complete_pipeline.py
+├── requirements.txt
+├── tests/                 # Unit tests
+├── notebooks/             # EDA & experimentation
+```
+
+---
+
+## 📚 Research & Citation
+
+Conducted as part of a Master's Thesis at **University of Hildesheim**.
 
 ```bibtex
 @mastersthesis{murtaza2024seqtab,
@@ -293,75 +179,31 @@ If you use this work in your research, please cite:
   author={Murtaza, Wasif},
   year={2024},
   school={University of Hildesheim},
-  type={Master's Thesis},
   url={https://github.com/Jafri115/dynamic_fraud_detection}
 }
 ```
-
-### 🔬 Research Contributions
-
-1. **Novel Architecture**: First framework to effectively combine sequential and tabular data for fraud detection
-2. **Time-Aware Processing**: Advanced attention mechanisms for temporal pattern recognition
-3. **Adversarial Training**: OCAN adaptation for handling severe class imbalance
-4. **Real-world Validation**: Comprehensive evaluation on Wikipedia vandalism detection
-5. **Production Deployment**: Complete end-to-end system with REST API
-
-### 📊 Related Work
-
-- **OCAN**: One-Class Adversarial Networks for anomaly detection
-- **Attention Mechanisms**: Time-aware processing for sequential data
-- **Multi-modal Learning**: Fusion of heterogeneous data types
-- **Fraud Detection**: Machine learning approaches for financial crime
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from the research and developer community!
+We welcome contributions!
 
-### 🌟 Ways to Contribute
+- 🐛 Report issues
+- 💡 Suggest enhancements
+- 🧪 Improve tests
+- 📚 Add docs or examples
 
-- **🐛 Bug Reports**: Found an issue? Open a GitHub issue
-- **💡 Feature Requests**: Have ideas? Share them in discussions  
-- **📝 Documentation**: Improve docs, add examples, write tutorials
-- **🧪 Testing**: Add test cases, improve coverage
-- **🔬 Research**: Extend the model, try new datasets
-- **💻 Code**: Fix bugs, optimize performance, add features
-
-### 📞 Get in Touch
-
-- **Issues**: [GitHub Issues](https://github.com/Jafri115/dynamic_fraud_detection/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Jafri115/dynamic_fraud_detection/discussions)
-- **Email**: swasifmurtaza@gmail.com
+Open a [GitHub issue](https://github.com/Jafri115/dynamic_fraud_detection/issues) or start a [discussion](https://github.com/Jafri115/dynamic_fraud_detection/discussions).
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-### 🙏 Acknowledgments
-
-- **University of Hildesheim** - Research supervision and academic support
-- **UMD** - Providing the Wikipedia vandalism dataset  
-- **Open Source Community** - Tools, libraries, and frameworks used
-- **Research Community** - Prior work in fraud detection and anomaly detection
-
----
-
-## 👨‍💻 Author
+## 👤 Author
 
 <div align="center">
 
 **Wasif Murtaza**  
-*Master's Student in Data Science*
-
-[![Email](https://img.shields.io/badge/Email-swasifmurtaza@gmail.com-red?style=for-the-badge&logo=gmail)](mailto:swasifmurtaza@gmail.com)
-[![GitHub](https://img.shields.io/badge/GitHub-@Jafri115-black?style=for-the-badge&logo=github)](https://github.com/Jafri115)
-[![University](https://img.shields.io/badge/University-Hildesheim-purple?style=for-the-badge)](https://www.uni-hildesheim.de/)
-[![Demo](https://img.shields.io/badge/🤗%20Demo-Hugging%20Face-yellow?style=for-the-badge)](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
-
----
-
+*Master’s Student, Data Science*  
+[GitHub](https://github.com/Jafri115) • [Email](mailto:swasifmurtaza@gmail.com) • [Demo](https://huggingface.co/spaces/Wasifjafri/wiki-fraud-detection)
 
 </div>
