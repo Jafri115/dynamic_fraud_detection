@@ -126,47 +126,72 @@ pip install -r requirements.txt
 
 ## 📊 Dataset & Features
 
-### 🗃️ UMDWikipedia Dataset
+### 🗃️ UMD Wikipedia Vandalism Dataset
 
 | Metric | Value | Description |
 |--------|-------|-------------|
 | **Users** | 33,000+ | Mix of vandals and legitimate editors |
-| **Edits** | 770,000 | Wikipedia edit transactions |
+| **Edits** | 770,000+ | Wikipedia edit transactions |
 | **Distribution** | 20% vandal / 80% benign | Realistic imbalanced scenario |
-| **Time Span** | 2013-2014 | Historical Wikipedia data |
+| **Time Span** | 2013-2014 | Historical Wikipedia edit data |
+| **Features** | 19 Tabular + Sequential | Behavioral and temporal indicators |
 
-### 🔧 Engineered Features
+### 🔧 Feature Engineering
 
-Our feature engineering transforms raw edit logs into meaningful behavioral indicators:
+Our feature engineering transforms raw Wikipedia edit logs into meaningful behavioral indicators:
 
-#### Temporal Features
-- `edit_frequency` - Average time between consecutive edits
-- `night_edits` - Activity during 18:00-06:00 (suspicious pattern)
-- `day_edits` - Activity during 06:00-18:00 (normal pattern)
-- `weekend_edits` - Weekend activity levels
+#### Sequential Features
+- `edit_sequence` - Sequence of page category IDs edited by user
+- `rev_time` - Timestamps of user's edit actions
+- `time_delta_seq` - Time intervals between consecutive edits
 
 #### Behavioral Features  
-- `total_edits` - User's complete edit history
-- `unique_pages` - Diversity of edited content
-- `reverted_ratio` - Proportion of reverted contributions
-- `cluebot_reverts` - Automated detection reversals
-- `category_diversity` - Breadth of topic engagement
+- `total_edits` - User's complete edit history count
+- `unique_pages` - Number of distinct pages edited
+- `unique_categories` - Diversity of page categories edited
+- `meta_edit_ratio` - Proportion of edits to meta-pages (Talk:, User:, etc.)
+- `first_edit_meta` - Whether user's first edit was to a meta-page
+
+#### Session-Based Features
+- `sessions_count` - Number of editing sessions (30-min gaps)
+- `avg_session_length` - Average edits per session
+- `max_session_length` - Maximum edits in single session
+- `session_intensity_variance` - Variability in session activity
+
+#### Temporal Features
+- `night_edit_ratio` - Activity during 22:00-06:00 (suspicious pattern)
+- `weekend_edit_ratio` - Weekend activity levels
+- `fast_edit_ratio_3min` - Proportion of edits within 3 minutes
+- `fast_edit_ratio_15min` - Proportion of edits within 15 minutes
+- `time_regularity_score` - Consistency of editing patterns
+
+#### Content Diversity Features
+- `page_diversity_ratio` - Unique pages / total edits
+- `category_diversity_ratio` - Unique categories / total edits
+- `category_switch_score` - Frequency of switching between categories
+- `reedit_score` - Tendency to re-edit same pages
+- `meta_burst_score` - Concentration of meta-page edits
 
 ### 💾 Data Processing
 
 ```python
 # Example: Feature extraction pipeline
-from src.components.data_transformation import DataTransformer
+from src.components.data_transformation import WikiCombinedTransformation
 
 # Initialize transformer
-transformer = DataTransformer()
+transformer = WikiCombinedTransformation()
 
-# Process raw edit sequences
-features = transformer.extract_features(user_edit_logs)
-sequences = transformer.create_sequences(user_edit_logs)
+# Process raw edit sequences and compute time deltas
+df = transformer.compute_time_deltas(df)
+
+# Extract tabular features (19 behavioral indicators)
+features, labels = transformer.extract_tabular_features(df)
+
+# Process sequence features for neural network
+transformer.process_sequence_features(df, seq_path, label_path, n_event_code)
 
 # Combined dataset ready for training
-processed_data = transformer.combine_features(features, sequences)
+combined_data = (tabular_features, sequence_features)
 ```
 
 ## 🎯 Performance
