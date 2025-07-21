@@ -63,52 +63,76 @@ class CombinedModel(tf.keras.Model):
         self.dropout = Dropout(dropout_rate_comb)
         self.final_output = Dense(1, activation='sigmoid', name='final_output')
 
-    def call(self, inputs, training=False, return_representation=False, train_tab=False, train_seq=False, train_combined=True):
-        if train_tab:
-            tabular_input = inputs
-            tabular_rep = self.tabular_model(tabular_input)
-            combined_input = tabular_rep
-        elif train_seq:
-            combined_input = self.sequential_model(inputs, training=training)
-        elif train_combined:
-            tab_out, seq_out = inputs
-            combined_input = self.concatenate([tab_out, seq_out])
+    def call(self, inputs, training=False, return_representation=False, **train_flags):
+        tabular_rep, seq_rep = self.build_representation(inputs, training, train_flags)
 
-        x = combined_input
+        # Handle the case when train_flags is empty (e.g., during model saving)
+        if not train_flags or all(not v for v in train_flags.values()):
+            # Default behavior based on available representations
+            if tabular_rep is not None and seq_rep is not None:
+                x = self.concatenate([tabular_rep, seq_rep])
+            elif tabular_rep is not None:
+                x = tabular_rep
+            elif seq_rep is not None:
+                x = seq_rep
+            else:
+                raise ValueError("No valid representation found")
+        elif train_flags.get('train_combined'):
+            x = self.concatenate([tabular_rep, seq_rep])
+        elif train_flags.get('train_tab'):
+            x = tabular_rep
+        elif train_flags.get('train_seq'):
+            x = seq_rep
+        else:
+            raise ValueError("Invalid mode")
+
         for layer in self.dense_layers:
             x = layer(x)
             x = self.dropout(x, training=training)
 
         if return_representation:
-            return x, combined_input
+            return x, (tabular_rep if tabular_rep is not None else seq_rep)
 
         return self.final_output(x)
 
-    def get_representation(self, inputs, training=False, train_flags=None):
+    
+    def build_representation(self, inputs, training, train_flags):
+        # Handle the case when train_flags is empty (e.g., during model saving)
+        if not train_flags or all(not v for v in train_flags.values()):
+            # Default to combined mode if we have multiple inputs, otherwise tabular
+            if isinstance(inputs, (list, tuple)) and len(inputs) > 1:
+                tabular_input, *seq_inputs = inputs
+                tabular_rep = self.tabular_model(tabular_input, training=training)
+                seq_rep = self.sequential_model(seq_inputs, training=training)
+                return tabular_rep, seq_rep
+            else:
+                # Single input, assume tabular
+                return self.tabular_model(inputs, training=training), None
+        
         if train_flags.get('train_combined'):
             tabular_input, *seq_inputs = inputs
             tabular_rep = self.tabular_model(tabular_input, training=training)
             seq_rep = self.sequential_model(seq_inputs, training=training)
-            return self.call((tabular_rep, seq_rep), training=training, return_representation=True, train_combined=True)
-
-        if train_flags.get('train_seq'):
-            return self.call(inputs, training=training, return_representation=True, train_seq=True)
+            return tabular_rep, seq_rep
 
         if train_flags.get('train_tab'):
-            return self.call(inputs, training=training, return_representation=True, train_tab=True)
+            return self.tabular_model(inputs, training=training), None
+
+        if train_flags.get('train_seq'):
+            return None, self.sequential_model(inputs, training=training)
+
+        raise ValueError("Invalid train flags")
+
+
+    def get_representation(self, inputs, training=False, train_flags=None):
+        if train_flags is None:
+            train_flags = {}
+        return self.call(inputs, training=training, return_representation=True, **train_flags)
 
     def predict_from_representation(self, inputs, training=False, train_flags=None):
-        if train_flags.get('train_combined'):
-            tabular_input, *seq_inputs = inputs
-            tabular_rep = self.tabular_model(tabular_input, training=training)
-            seq_rep = self.sequential_model(seq_inputs, training=training)
-            return self.call((tabular_rep, seq_rep), training=training, train_combined=True)
-
-        if train_flags.get('train_seq'):
-            return self.call(inputs, training=training, train_seq=True)
-
-        if train_flags.get('train_tab'):
-            return self.call(inputs, training=training, train_tab=True)
+        if train_flags is None:
+            train_flags = {}
+        return self.call(inputs, training=training, return_representation=False, **train_flags)
 
     def get_config(self):
         return {
@@ -132,4 +156,15 @@ class CombinedModel(tf.keras.Model):
 
     @classmethod
     def from_config(cls, config):
-        return cls(**config)
+        # Filter out parameters that aren't part of the model constructor
+        valid_params = {
+            'input_shape_tabular', 'max_len', 'max_code', 'combined_hidden_layers',
+            'dropout_rate_comb', 'dropout_rate_seq', 'droput_rate_tab', 'layer',
+            'tab_hidden_states', 'batch_size', 'n_event_code', 'is_public_dataset',
+            'l2_lambda_comb', 'l2_lambda_tab', 'l2_lambda_seq', 'model_dim'
+        }
+        
+        # Filter config to only include valid model parameters
+        filtered_config = {k: v for k, v in config.items() if k in valid_params}
+        
+        return cls(**filtered_config)

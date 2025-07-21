@@ -34,7 +34,7 @@ class Phase1Tuner(ModelTuner):
             'layer': trial.suggest_categorical('layer', [2, 3]),  # Deeper models were more effective
 
             # === Dropout rates ===
-            'dropout_rate_seq': trial.suggest_float('dropout_rate_seq', 0.0, 0.2, step=0.1),  # Avoid 0.3 - hurt performance
+            'dropout_rate_seq': trial.suggest_float('dropout_rate_seq', 0.0, 0.2, step=0.1),  # Avoid 0.3 – hurt performance
             'droput_rate_tab': trial.suggest_float('droput_rate_tab', 0.0, 0.2, step=0.1),
             'dropout_rate_comb': trial.suggest_float('dropout_rate_comb', 0.0, 0.2, step=0.1),
 
@@ -59,7 +59,7 @@ class Phase1Tuner(ModelTuner):
             ),
 
             # === Class balancing ===
-            'use_class_weights': trial.suggest_categorical('use_class_weights', [False]),  # Always false - better performance
+            'use_class_weights': trial.suggest_categorical('use_class_weights', [False]),  # Always false – better performance
             'use_smote': trial.suggest_categorical('use_smote', [False]),  # SMOTE consistently hurt results
 
             # === Optimization ===
@@ -163,7 +163,7 @@ class Phase1Tuner(ModelTuner):
             trial.set_user_attr("batch_size", params['batch_size'])
             
             # Print trial information
-            print(f"[TRIAL] Starting trial: {trial.number} (MLflow run: {run.info.run_name})")
+            print(f"[*] Starting trial: {trial.number} (MLflow run: {run.info.run_name})")
             if hasattr(trial, 'study') and hasattr(trial.study, 'study_name'):
                 print(f"   Study: {trial.study.study_name}")
 

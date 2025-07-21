@@ -107,13 +107,13 @@ def main():
     commands = [
         # Step 1: Data Ingestion
         {
-            'command': 'python -c "from src.components.data_ingestion import WikiDataIngestion; ingestion = WikiDataIngestion(); ingestion.initiate_data_ingestion()"',
+            'command': 'python -m src.components.data_ingestion',
             'description': "Data Ingestion - Loading and preprocessing raw wiki data"
         },
         
         # Step 2: Data Transformation
         {
-            'command': 'python -c "from src.components.data_transformation import WikiCombinedTransformation; transformer = WikiCombinedTransformation(); transformer.transform(\'data/processed/wiki/user_edits_train.pkl\', \'data/processed/wiki/user_edits_val.pkl\')"',
+            'command': 'python -m src.components.data_transformation',
             'description': "Data Transformation - Feature engineering and preprocessing"
         },
         {
@@ -126,10 +126,14 @@ def main():
             'command': 'python -m scripts.train_phase1',
             'description': "Model Training - Training the fraud detection model"
         },
+        {
+            'command': 'python -m scripts.evaluate',
+            'description': "Model Training - Training the fraud detection model (Phase 2)"
+        },
         
         # Step 4: Prediction Pipeline Test
         {
-            'command': 'python -m src.pipeline.predict_pipeline',
+            'command': 'python -m scripts.predict_su',
             'description': "Prediction Pipeline - Testing with simple fraud detection model"
         }
     ]

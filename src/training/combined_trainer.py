@@ -1,14 +1,13 @@
-# src/training/combined_trainer.py
 import numpy as np
 import tensorflow as tf
 import time
 from sklearn.metrics import average_precision_score, f1_score
+from tqdm import tqdm
 
 from src.utils.helpers import CombinedCustomLoss
 from src.models.seqtab.units import pad_matrix, pad_time, pad_failure_bits
 
-
-def batch_generator(data, batch_size, max_len, n_event_code, train_flags, num_batches,maxcode):
+def batch_generator(data, batch_size, max_len, n_event_code, train_flags, num_batches, maxcode):
     x, y = data
 
     if train_flags.get('train_combined'):
@@ -58,14 +57,7 @@ def batch_generator(data, batch_size, max_len, n_event_code, train_flags, num_ba
                 tf.convert_to_tensor(y_seq[batch_indices].astype(float))
             )
 
-
-
 def train_model(model, train_data, val_data, epochs, train_flags, verbose=False, val_every_n_epochs=1):
-    import time
-    from sklearn.metrics import f1_score, average_precision_score
-    import numpy as np
-    import tensorflow as tf
-
     history = {key: [] for key in [
         'total_loss', 'tabular_loss', 'sequential_loss', 'accuracy',
         'f1_score', 'precision', 'recall', 'auc_pr', 'avg_precision', 'auc_roc',
@@ -75,23 +67,15 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
 
     loss_fn = CombinedCustomLoss()
     optimizer = model.optimizer
-
     best_val_f1 = 0
     patience = 3
     patience_counter = 0
 
-    if train_flags.get('train_combined'):
-        num_samples = train_data[0][0].shape[0]
-    else:
-        num_samples = train_data[0].shape[0]
-
+    num_samples = train_data[0][0].shape[0] if train_flags.get('train_combined') else train_data[0].shape[0]
     num_batches = (num_samples + model.batch_size - 1) // model.batch_size
 
     if verbose:
-        print(
-            f"Starting training for {epochs} epochs with {num_samples} samples "
-            f"and batch size {model.batch_size} ({num_batches} batches per epoch)"
-        )
+        print(f"Starting training for {epochs} epochs with {num_samples} samples and batch size {model.batch_size} ({num_batches} batches per epoch)")
 
     for epoch in range(epochs):
         start_time = time.time()
@@ -102,18 +86,11 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
         y_true_epoch = []
         y_pred_epoch = []
 
+        print(f"\nEpoch {epoch + 1}/{epochs}")
         for batch_idx, (inputs, labels) in enumerate(
-            batch_generator(
-                train_data,
-                model.batch_size,
-                model.max_len,
-                model.n_event_code,
-                train_flags,
-                num_batches,
-                model.max_code
-            ),
-            1,
-        ):
+            tqdm(batch_generator(train_data, model.batch_size, model.max_len, model.n_event_code, train_flags, num_batches, model.max_code),
+                 total=num_batches, desc="Training Batches"), 1):
+
             with tf.GradientTape() as tape:
                 tabular_input, *seq_inputs = inputs
                 y_tab_true, y_seq_true = labels
@@ -124,8 +101,8 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
                 seq_repr = model.sequential_model(tuple(seq_inputs), training=True)
                 y_seq_pred = model.sequential_output(seq_repr)
 
-                combined_input = (tab_repr, seq_repr)
-                y_combined_pred = model(combined_input, training=True, **train_flags)
+                # Use original inputs for combined prediction, not representations
+                y_combined_pred = model(inputs, training=True, **train_flags)
 
                 total_loss = loss_fn((y_tab_true, y_seq_true), (y_tab_pred, y_seq_pred, y_combined_pred))
                 epoch_total_loss += total_loss.numpy()
@@ -141,12 +118,6 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
             model.compiled_metrics.update_state(y_seq_true, y_combined_pred)
             avg_precision += average_precision_score(y_seq_true.numpy(), y_combined_pred.numpy())
 
-            if verbose:
-                print(
-                    f"    Batch {batch_idx}/{num_batches} - Loss: {total_loss.numpy():.4f}",
-                    end="\r" if batch_idx < num_batches else "\n",
-                )
-
         metrics_result = {m.name: m.result().numpy() for m in model.metrics}
         metrics_result['avg_precision'] = avg_precision / num_batches
         metrics_result['f1_score'] = f1_score(y_true_epoch, np.array(y_pred_epoch) > 0.5)
@@ -154,16 +125,7 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
         metrics_result['tabular_loss'] = epoch_tab_loss / num_batches
         metrics_result['sequential_loss'] = epoch_seq_loss / num_batches
 
-        metric_keys = [
-            'total_loss', 'tabular_loss', 'sequential_loss',
-            'accuracy', 'precision', 'recall',
-            'f1_score', 'auc_pr', 'auc_roc', 'avg_precision',
-        ]
-
-        metrics_line = " - ".join(
-            [f"{key}: {metrics_result[key]:.4f}" for key in metric_keys if key in metrics_result]
-        )
-        print(f"Epoch {epoch + 1}/{epochs} - Time: {(time.time() - start_time) / 60:.2f} mins - {metrics_line}")
+        print(" - ".join([f"{k}: {metrics_result[k]:.4f}" for k in metrics_result if k in history]))
 
         for key in metrics_result:
             history[key].append(metrics_result[key])
@@ -172,18 +134,9 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
             metric.reset_states()
 
         # ----- Validation Pass -----
-        run_validation = (
-            val_data is not None and
-            ((epoch + 1) % val_every_n_epochs == 0 or (epoch + 1 == epochs))
-        )
-
-        if run_validation:
-            if train_flags.get('train_combined'):
-                val_samples = val_data[0][0].shape[0]
-            else:
-                val_samples = val_data[0].shape[0]
+        if val_data and ((epoch + 1) % val_every_n_epochs == 0 or (epoch + 1 == epochs)):
+            val_samples = val_data[0][0].shape[0] if train_flags.get('train_combined') else val_data[0].shape[0]
             val_batches = (val_samples + model.batch_size - 1) // model.batch_size
-
             val_avg_precision = 0
             val_total_loss = 0
             val_tab_loss = 0
@@ -191,15 +144,10 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
             val_y_true = []
             val_y_pred = []
 
-            for val_inputs, val_labels in batch_generator(
-                val_data,
-                model.batch_size,
-                model.max_len,
-                model.n_event_code,
-                train_flags,
-                val_batches,
-                model.max_code
-            ):
+            for val_inputs, val_labels in tqdm(
+                batch_generator(val_data, model.batch_size, model.max_len, model.n_event_code, train_flags, val_batches, model.max_code),
+                total=val_batches, desc="Validation Batches"):
+
                 tabular_input, *seq_inputs = val_inputs
                 y_tab_true, y_seq_true = val_labels
 
@@ -209,8 +157,8 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
                 seq_repr = model.sequential_model(tuple(seq_inputs), training=False)
                 y_seq_pred = model.sequential_output(seq_repr)
 
-                combined_input = (tab_repr, seq_repr)
-                y_combined_pred = model(combined_input, training=False, **train_flags)
+                # Use original inputs for combined prediction, not representations
+                y_combined_pred = model(val_inputs, training=False, **train_flags)
 
                 total_loss = loss_fn((y_tab_true, y_seq_true), (y_tab_pred, y_seq_pred, y_combined_pred))
                 val_total_loss += total_loss.numpy()
@@ -232,10 +180,8 @@ def train_model(model, train_data, val_data, epochs, train_flags, verbose=False,
             for key, value in val_metrics.items():
                 history[f'val_{key}'].append(value)
 
-            # Early stopping
-            current_val_f1 = val_metrics['f1_score']
-            if current_val_f1 > best_val_f1:
-                best_val_f1 = current_val_f1
+            if val_metrics['f1_score'] > best_val_f1:
+                best_val_f1 = val_metrics['f1_score']
                 patience_counter = 0
             else:
                 patience_counter += 1

@@ -477,7 +477,7 @@ class HyperparameterTuningPipeline:
         for param_file in param_files:
             file_path = os.path.join(self.tuning_config.tuning_results_dir, param_file)
             if os.path.exists(file_path):
-                print(f"  [OK] {param_file}")
+                print(f"  [*] {param_file}")
             else:
                 print(f"  [MISSING] {param_file} (not created)")
         
@@ -495,7 +495,7 @@ def main():
         max_epochs=10,
         tune_phase1=True,
         tune_phase2=False,
-        timeout_seconds=36000      # [TIME] 10 hours = 10 x 60 x 60 = 36,000 seconds
+        timeout_seconds=36000      # ⏱ 10 hours = 10 × 60 × 60 = 36,000 seconds
     )
     
     # Run tuning

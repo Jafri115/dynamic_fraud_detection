@@ -251,9 +251,9 @@ class MultiHeadAttention(tf.keras.layers.Layer):
         return output, attention
 
 class TimeEncoder(tf.keras.Model):
-    """Time Encoder module: Global level Comprehensive Analysis
+    """Time Encoder module: Globle level Comprehensive Analysis
     input: seq_time_step
-    input: final_queries (equation 5) q = ReLU(Wqh* + bq), query vector
+    input: final_queries (equation 5) q = ReLU(Wqh∗ + bq), query vector
     output: time_weight
     
     """
@@ -268,12 +268,12 @@ class TimeEncoder(tf.keras.Model):
         seq_time_step = tf.cast(tf.expand_dims(seq_time_step, axis=-1), dtype=tf.float32) / 7200
 
         # Applying the selection layer and the activation functions
-        selection_feature = 1 - tf.math.tanh(tf.pow(self.selection_layer(seq_time_step), 2))  # ot equation 6 part 1, selection layer multiplies (delta_t/180) by Wo
+        selection_feature = 1 - tf.math.tanh(tf.pow(self.selection_layer(seq_time_step), 2))  # ot equation 6 part 1, selection layer multiplies (δt/180) by Wo
         selection_feature = tf.keras.activations.relu(self.weight_layer(selection_feature)) # Kt equation 6 part 2, weight_layer layer multiplies (ot) by Wk
 
         input_dim = 8 # change according to the input dimension
         # Applying the weights to the final queries
-        selection_feature = tf.reduce_sum(selection_feature * final_queries, axis=2, keepdims=True) / input_dim # equation 7, q_transpose*kt/sqrt(s). qt was input
+        selection_feature = tf.reduce_sum(selection_feature * final_queries, axis=2, keepdims=True) / input_dim # equation 7, q⊤*kt/√s. qt was input
 
         # Applying the mask
         expanded_mask = tf.cast(mask,tf.bool)
@@ -282,7 +282,7 @@ class TimeEncoder(tf.keras.Model):
         # selection_feature = tf.where(mask, selection_feature, tf.fill(tf.shape(selection_feature), -np.inf))
 
         # Applying softmax
-        return tf.nn.softmax(selection_feature, axis=1)  # equation 8, beta = Softmax(phi), Global attention weight
+        return tf.nn.softmax(selection_feature, axis=1)  # equation 8, β = Softmax(ϕ), Globle attention weight
 def padding_mask(seq_k, seq_q):
     # Get the length of the sequences
     len_q = tf.shape(seq_q)[1]

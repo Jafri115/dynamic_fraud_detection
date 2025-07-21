@@ -69,7 +69,7 @@ def plot_training_history(history: Dict[str, List[float]], out_dir: str = "plots
 
 
 # --------------------------
-# [TEST] Dummy Test Case
+#  Dummy Test Case
 # --------------------------
 if __name__ == "__main__":
     dummy_history = {
